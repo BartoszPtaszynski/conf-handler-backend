@@ -35,12 +35,12 @@ public class Participant {
 
     @OneToMany(mappedBy = "participant")
     private Set<Attendance_Event> attendence_event;*/
-public Participant( String name, String surname, String email_login, String affilation, String password) {
+public Participant( String name, String surname, String email_login, String affiliation, String password) {
 
     this.name = name;
     this.surname = surname;
     this.email = email_login;
-    this.affiliation = affilation;
+    this.affiliation = affiliation;
     this.password = password;
 }
     public Participant( String name, String surname, String email_login, String affilation) {
