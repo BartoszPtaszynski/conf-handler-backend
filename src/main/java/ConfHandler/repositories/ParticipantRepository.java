@@ -1,6 +1,6 @@
 package ConfHandler.repositories;
 
-import ConfHandler.model.Participant;
+import ConfHandler.model.entity.Participant;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

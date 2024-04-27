@@ -1,14 +1,17 @@
-package ConfHandler.model;
+package ConfHandler.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -30,6 +33,9 @@ public class Session {
     private String building;
     private String room_number;
 
+    @OneToMany(mappedBy = "session")
+    private List<Event> eventList;
+
     public Session(String name, LocalDateTime time_start, LocalDateTime time_end, String city, String street, String building, String room_number) {
         this.name = name;
         this.timeStart = time_start;
@@ -38,5 +44,12 @@ public class Session {
         this.street = street;
         this.building = building;
         this.room_number = room_number;
+    }
+
+    public String getDuration()
+    {
+        return timeStart.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")) +
+                " - " +
+                timeEnd.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

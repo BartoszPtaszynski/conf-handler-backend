@@ -1,4 +1,4 @@
-package ConfHandler.model;
+package ConfHandler.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
@@ -25,6 +25,4 @@ public class Conference {
     LocalDate dateStart;
     @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate dateEnd;
-
-
 }

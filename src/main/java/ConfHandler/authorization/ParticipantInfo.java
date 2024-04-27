@@ -1,6 +1,6 @@
 package ConfHandler.authorization;
 
-import ConfHandler.model.Participant;
+import ConfHandler.model.entity.Participant;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

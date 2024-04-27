@@ -1,4 +1,4 @@
-package ConfHandler.model;
+package ConfHandler.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 
@@ -50,6 +51,13 @@ public class Event {
         this.timeEnd = time_end;
         this.name = name;
 
+    }
+
+    public String getDuration()
+    {
+        return timeStart.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")) +
+                " - " +
+                timeEnd.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
 }

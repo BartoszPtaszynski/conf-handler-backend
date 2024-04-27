@@ -1,6 +1,6 @@
 package ConfHandler.authorization;
 
-import ConfHandler.model.Participant;
+import ConfHandler.model.entity.Participant;
 import ConfHandler.repositories.ParticipantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
