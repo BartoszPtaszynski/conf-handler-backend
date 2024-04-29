@@ -1,5 +1,7 @@
 package ConfHandler.authorization;
 
+import ConfHandler.ErrorJsonResponse;
+import ConfHandler.SuccessJsonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,9 +22,9 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginCommand loginCommand) {
         try {
             ParticipantInfo participantInfo = authorizationService.login(loginCommand);
-            return new ResponseEntity<>(participantInfo, HttpStatus.OK);
+            return new SuccessJsonResponse(participantInfo, HttpStatus.OK);
         }catch (RuntimeException | ParticipantNotFoundException e) {
-            return new ResponseEntity<>("invalid email or password",HttpStatus.UNAUTHORIZED);
+            return new ErrorJsonResponse("invalid email or password",HttpStatus.UNAUTHORIZED);
         }
     }
 }
