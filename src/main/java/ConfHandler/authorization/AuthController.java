@@ -22,7 +22,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginCommand loginCommand) {
         try {
             ParticipantInfo participantInfo = authorizationService.login(loginCommand);
-            return new SuccessJsonResponse(participantInfo, HttpStatus.OK);
+            return new SuccessJsonResponse(participantInfo);
         }catch (RuntimeException | ParticipantNotFoundException e) {
             return new ErrorJsonResponse("invalid email or password",HttpStatus.UNAUTHORIZED);
         }

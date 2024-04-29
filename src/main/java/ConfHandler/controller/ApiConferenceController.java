@@ -1,6 +1,5 @@
 package ConfHandler.controller;
 
-import ConfHandler.SuccessJsonResponse;
 import ConfHandler.sevice.DisplayConferenceService;
 import org.hibernate.mapping.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ public class ApiConferenceController {
     private DisplayConferenceService displayConferenceService;
     @GetMapping("/getTimeLineByDate")
     public ResponseEntity<?> getTimeLineByDay(@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date) {
-        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date), HttpStatus.OK);
-
+        return new ResponseEntity<>( displayConferenceService.getDayOfConference(date), HttpStatus.OK);
     }
 }
