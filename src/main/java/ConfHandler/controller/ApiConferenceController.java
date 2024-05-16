@@ -17,7 +17,7 @@ public class ApiConferenceController {
     @Autowired
     private DisplayConferenceService displayConferenceService;
     @GetMapping("/getTimeLineByDate")
-    public ResponseEntity<?> getTimeLineByDay(@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date) {
+    public ResponseEntity<?> getTimeLineByDay(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return new ResponseEntity<>( displayConferenceService.getDayOfConference(date), HttpStatus.OK);
     }
 }

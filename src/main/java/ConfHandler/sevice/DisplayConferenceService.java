@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
@@ -48,7 +49,6 @@ public class DisplayConferenceService {
                 )
                 .toList();
 
-
                 List<EventDto> eventsNoInSession = eventRepository.getEventsByDateWithoutSession(date)
                         .stream().map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList();
 
@@ -58,6 +58,7 @@ public class DisplayConferenceService {
 
     private List<EventDto> getEventList(Session session) {
         return session.getEventList().stream()
+                .sorted(Comparator.comparing(Event::getTimeStart))
                 .map(event -> {
                     Lecture lecture = lectureRepository.getByEvent_Id(event.getId());
                     return lecture == null ?
