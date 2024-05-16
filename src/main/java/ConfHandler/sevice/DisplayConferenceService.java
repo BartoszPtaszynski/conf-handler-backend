@@ -37,6 +37,7 @@ public class DisplayConferenceService {
     public ConferenceByDayDto getDayOfConference(LocalDate date) {
 
         List<SessionDto> sessions = sessionRepository.getSessionsByTimeStart(date).stream()
+                .sorted(Comparator.comparing(Session::getTimeStart))
                 .map(s -> SessionDto.builder()
                         .id(s.getId())
                         .name(s.getName())
@@ -50,7 +51,7 @@ public class DisplayConferenceService {
                 .toList();
 
                 List<EventDto> eventsNoInSession = eventRepository.getEventsByDateWithoutSession(date)
-                        .stream().map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList();
+                        .stream().sorted(Comparator.comparing(Event::getTimeStart)).map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList();
 
 
         return ConferenceByDayDto.builder().sessions(sessions).events(eventsNoInSession).build();
