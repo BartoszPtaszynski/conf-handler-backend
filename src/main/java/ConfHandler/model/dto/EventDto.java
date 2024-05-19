@@ -9,8 +9,10 @@ import java.util.UUID;
 @Setter
 @Data
 
-public class EventDto {
+public class EventDto{
     private UUID id;
     private String name;
     private String duration;
+
+
 }

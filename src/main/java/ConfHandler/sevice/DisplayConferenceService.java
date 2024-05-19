@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -34,9 +36,11 @@ public class DisplayConferenceService {
 
     @Autowired
     private EventRepository eventRepository;
-    public ConferenceByDayDto getDayOfConference(LocalDate date) {
+    public List<?> getDayOfConference(LocalDate date) {
 
-        List<SessionDto> sessions = sessionRepository.getSessionsByTimeStart(date).stream()
+        List<Object> listOfAllEvents=new ArrayList<>();
+        listOfAllEvents.addAll(
+          sessionRepository.getSessionsByTimeStart(date).stream()
                 .sorted(Comparator.comparing(Session::getTimeStart))
                 .map(s -> SessionDto.builder()
                         .id(s.getId())
@@ -48,13 +52,20 @@ public class DisplayConferenceService {
                         .eventList(getEventList(s))
                         .build()
                 )
-                .toList();
+                .toList());
 
-                List<EventDto> eventsNoInSession = eventRepository.getEventsByDateWithoutSession(date)
-                        .stream().sorted(Comparator.comparing(Event::getTimeStart)).map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList();
+        listOfAllEvents.addAll(eventRepository.getEventsByDateWithoutSession(date)
+                .stream().sorted(Comparator.comparing(Event::getTimeStart)).map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList());
 
-
-        return ConferenceByDayDto.builder().sessions(sessions).events(eventsNoInSession).build();
+        
+        listOfAllEvents.sort(Comparator.comparing(o -> {
+            if (o instanceof SessionDto) {
+                return ((SessionDto) o).getDuration();
+            } else {
+                return ((EventDto) o).getDuration();
+            }
+        }));
+        return listOfAllEvents;
     }
 
     private List<EventDto> getEventList(Session session) {
