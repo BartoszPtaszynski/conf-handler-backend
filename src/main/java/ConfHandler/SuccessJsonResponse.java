@@ -7,9 +7,9 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
-public class SuccessJsonResponse extends ResponseEntity<Map<String,Object>> {
+public class SuccessJsonResponse extends ResponseEntity<Object> {
     public SuccessJsonResponse(Object object) {
-        super( Map.of("response",object), HttpStatus.OK);
+        super(object, HttpStatus.OK);
     }
 
 
