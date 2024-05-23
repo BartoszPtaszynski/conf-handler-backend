@@ -12,4 +12,6 @@ public interface SessionRepository extends JpaRepository<Session,UUID> {
 
     @Query("select s from Session s where CAST(s.timeStart as localdate )= :date order by s.timeStart")
     List<Session> getSessionsByTimeStart(LocalDate date);
+
+
 }
