@@ -21,8 +21,8 @@ public class ApiConferenceController {
     public ResponseEntity<?> getTimeLineByDay(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date));
     }
-//    @GetMapping("/getTimeLineByDate")
-//    public ResponseEntity<?> getTimeLineByDayOfParticipant(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam("id") Long id) {
-//        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date));
-//    }
+    @GetMapping("/getTimeLineByDate2")
+    public ResponseEntity<?> getTimeLineByDayOfParticipant(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, Long id) {
+        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date));
+    }
 }

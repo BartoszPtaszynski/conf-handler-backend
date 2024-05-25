@@ -16,13 +16,13 @@ public class LectureDto extends EventDto{
     private String _abstract;
     private String lecturer;
     private String topic;
-    private UUID idEvent;
 
-    public LectureDto(UUID id, String name, String duration, String _abstract, String lecturer, String topic,UUID idEvent) {
+
+    public LectureDto(UUID id, String name, String duration, String _abstract, String lecturer, String topic) {
         super(id, name, duration);
         this._abstract = _abstract;
         this.lecturer = lecturer;
         this.topic = topic;
-        this.idEvent = idEvent;
+
     }
 }

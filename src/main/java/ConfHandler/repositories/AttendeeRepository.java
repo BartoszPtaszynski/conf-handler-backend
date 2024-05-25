@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,4 +19,9 @@ public interface AttendeeRepository extends JpaRepository<Attendee, UUID> {
             "and " +
             "attendee.participant = :participant")
     public Optional<Attendee> findByEventAndParticipant(@Param("event") Event event, @Param("participant") Participant participant);
+
+    @Query("SELECT attendee.event.id " +
+            "from Attendee attendee " +
+            "where attendee.participant.id = :id")
+    List<UUID> getIdsOfUserEvents(@Param("id") UUID id);
 }

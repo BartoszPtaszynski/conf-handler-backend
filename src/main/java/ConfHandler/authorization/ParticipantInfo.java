@@ -1,39 +1,22 @@
 package ConfHandler.authorization;
 
 import ConfHandler.model.entity.Participant;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder
 public class ParticipantInfo {
     private UUID id;
     private String name;
     private String surname;
     private String email;
     private String affiliation;
+    private List<UUID> bookmarkedEvents;
 
-    public ParticipantInfo(UUID id, String name, String surname, String email, String affiliation) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.affiliation = affiliation;
-    }
 
-    public static ParticipantInfo getFromParticipant(Participant participant) {
-        return new ParticipantInfo(
-                participant.getId(),
-                participant.getName(),
-                participant.getSurname(),
-                participant.getEmail(),
-                participant.getAffiliation()
-        );
-    }
 }
