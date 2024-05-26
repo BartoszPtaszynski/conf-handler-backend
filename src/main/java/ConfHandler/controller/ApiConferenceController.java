@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @RestController
 public class ApiConferenceController {
@@ -19,10 +20,10 @@ public class ApiConferenceController {
     private DisplayConferenceService displayConferenceService;
     @GetMapping("/getTimeLineByDate")
     public ResponseEntity<?> getTimeLineByDay(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date));
+        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date,null));
     }
-    @GetMapping("/getTimeLineByDate2")
-    public ResponseEntity<?> getTimeLineByDayOfParticipant(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, Long id) {
-        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date));
+    @GetMapping("/getTimeLineByDateByParticipant")
+    public ResponseEntity<?> getTimeLineByDayOfParticipant(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, UUID id) {
+        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date,id));
     }
 }

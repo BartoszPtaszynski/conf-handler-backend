@@ -24,7 +24,7 @@ public class ApiParticipantController {
     public ResponseEntity<?> signParticipantToEvent(@RequestParam UUID idEvent,UUID idParticipant) {
         try {
             participantService.saveParticipantToEvent(idParticipant,idEvent);
-            return new SuccessJsonResponse("Participant("+idParticipant+") added to event("+idEvent+")" );
+            return new SuccessJsonResponse("successfully added" );
         } catch (EventNotFoundException | ParticipantNotFoundException| AttendeeAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
@@ -33,7 +33,7 @@ public class ApiParticipantController {
     public ResponseEntity<?> removeParticipantFromEvent(@RequestParam UUID idEvent,UUID idParticipant) {
         try {
             participantService.deleteParticipantFromEvent(idParticipant,idEvent);
-            return new SuccessJsonResponse("Participant("+idParticipant+") removed event("+idEvent+")" );
+            return new SuccessJsonResponse("successfully removed" );
         } catch (EventNotFoundException | ParticipantNotFoundException | AttendeeNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }

@@ -4,10 +4,8 @@ import ConfHandler.model.dto.ConferenceByDayDto;
 import ConfHandler.model.dto.EventDto;
 import ConfHandler.model.dto.LectureDto;
 import ConfHandler.model.dto.SessionDto;
-import ConfHandler.model.entity.Conference;
-import ConfHandler.model.entity.Event;
-import ConfHandler.model.entity.Lecture;
-import ConfHandler.model.entity.Session;
+import ConfHandler.model.entity.*;
+import ConfHandler.repositories.AttendeeRepository;
 import ConfHandler.repositories.EventRepository;
 import ConfHandler.repositories.LectureRepository;
 import ConfHandler.repositories.SessionRepository;
@@ -22,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
@@ -33,10 +32,12 @@ public class DisplayConferenceService {
     private SessionRepository sessionRepository;
     @Autowired
     private LectureRepository lectureRepository;
+    @Autowired
+    private AttendeeRepository attendeeRepository;
 
     @Autowired
     private EventRepository eventRepository;
-    public List<?> getDayOfConference(LocalDate date) {
+    public List<?> getDayOfConference(LocalDate date,UUID idParticipant) {
 
         List<Object> listOfAllEvents=new ArrayList<>();
         listOfAllEvents.addAll(
@@ -49,13 +50,17 @@ public class DisplayConferenceService {
                         .city(s.getCity())
                         .street(s.getStreet())
                         .building(s.getBuilding())
-                        .eventList(getEventList(s))
+                        .eventList(getEventList(s,idParticipant))
                         .build()
                 )
+                  .filter(sessionDto -> !sessionDto.getEventList().isEmpty())
                 .toList());
 
         listOfAllEvents.addAll(eventRepository.getEventsByDateWithoutSession(date)
-                .stream().sorted(Comparator.comparing(Event::getTimeStart)).map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList());
+                .stream()
+                .filter(event -> attendeeRepository.getIdsOfUserEvents(idParticipant)
+                        .contains(event.getId())).sorted(Comparator.comparing(Event::getTimeStart))
+                .map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList());
 
         
         listOfAllEvents.sort(Comparator.comparing(o -> {
@@ -68,8 +73,10 @@ public class DisplayConferenceService {
         return listOfAllEvents;
     }
 
-    private List<EventDto> getEventList(Session session) {
+
+    private List<EventDto> getEventList(Session session, UUID idParticipant) {
         return session.getEventList().stream()
+                .filter(event -> attendeeRepository.getIdsOfUserEvents(idParticipant).contains(event.getId()))
                 .sorted(Comparator.comparing(Event::getTimeStart))
                 .map(event -> {
                     Lecture lecture = lectureRepository.getByEvent_Id(event.getId());

@@ -22,6 +22,6 @@ public interface AttendeeRepository extends JpaRepository<Attendee, UUID> {
 
     @Query("SELECT attendee.event.id " +
             "from Attendee attendee " +
-            "where attendee.participant.id = :id")
+            "where attendee.participant.id = :id or :id is null")
     List<UUID> getIdsOfUserEvents(@Param("id") UUID id);
 }
