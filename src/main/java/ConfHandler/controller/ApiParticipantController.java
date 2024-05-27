@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController()
-@RequestMapping("/participantToEvent")
 public class ApiParticipantController {
     @Autowired
     private ParticipantService participantService;
 
-    @PostMapping()
+    @PostMapping("/addBookmark")
     public ResponseEntity<?> signParticipantToEvent(@RequestParam UUID idEvent,UUID idParticipant) {
         try {
             participantService.saveParticipantToEvent(idParticipant,idEvent);
@@ -29,7 +28,7 @@ public class ApiParticipantController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
-    @DeleteMapping()
+    @DeleteMapping("/removeBookmark")
     public ResponseEntity<?> removeParticipantFromEvent(@RequestParam UUID idEvent,UUID idParticipant) {
         try {
             participantService.deleteParticipantFromEvent(idParticipant,idEvent);
