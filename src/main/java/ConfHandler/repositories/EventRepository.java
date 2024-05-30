@@ -1,6 +1,7 @@
 package ConfHandler.repositories;
 
 import ConfHandler.model.entity.Event;
+import ConfHandler.model.entity.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,4 +13,8 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     @Query("select e from Event e where cast(e.timeStart as localdate) = :date and e.session is null")
     List<Event> getEventsByDateWithoutSession(LocalDate date);
+
+
+
+
 }
