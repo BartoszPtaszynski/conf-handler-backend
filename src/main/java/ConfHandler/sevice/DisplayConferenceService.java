@@ -1,14 +1,8 @@
 package ConfHandler.sevice;
 
-import ConfHandler.model.dto.ConferenceByDayDto;
-import ConfHandler.model.dto.EventDto;
-import ConfHandler.model.dto.LectureDto;
-import ConfHandler.model.dto.SessionDto;
+import ConfHandler.model.dto.*;
 import ConfHandler.model.entity.*;
-import ConfHandler.repositories.AttendeeRepository;
-import ConfHandler.repositories.EventRepository;
-import ConfHandler.repositories.LectureRepository;
-import ConfHandler.repositories.SessionRepository;
+import ConfHandler.repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +31,9 @@ public class DisplayConferenceService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private ConferenceRepository conferenceRepository;
     public List<?> getDayOfConference(LocalDate date,UUID id) {
 
         List<Object> listOfAllEvents=new ArrayList<>();
@@ -94,4 +91,7 @@ public class DisplayConferenceService {
                 .toList();
     }
 
+    public ConferenceInfoDto getConferenceInfo() {
+        return conferenceRepository.getConferenceInfo().orElseThrow(()->new NullPointerException("conference not found"));
+    }
 }

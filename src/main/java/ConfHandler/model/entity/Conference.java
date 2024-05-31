@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -21,8 +23,8 @@ public class Conference {
     @GeneratedValue
     UUID id;
     String name;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    LocalDate dateStart;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    LocalDate dateEnd;
+
+    OffsetDateTime dateStart;
+
+    OffsetDateTime dateEnd;
 }

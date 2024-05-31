@@ -26,4 +26,13 @@ public class ApiConferenceController {
     public ResponseEntity<?> getTimeLineByDayOfParticipant(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, UUID id) {
         return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date,id));
     }
+
+    @GetMapping("/conferenceDetails")
+    public ResponseEntity<?> getConferenceInfo() {
+        try {
+            return new SuccessJsonResponse(displayConferenceService.getConferenceInfo());
+        }catch (NullPointerException e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+        }
+    }
 }
