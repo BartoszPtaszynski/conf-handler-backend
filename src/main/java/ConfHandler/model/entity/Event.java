@@ -31,6 +31,7 @@ public class Event {
     @ManyToOne()
     @JoinColumn(name = "session_fk")
     private Session session;
+    private String description;
 
     @ManyToOne()
     @JoinColumn(name = "participant_fk")
@@ -46,8 +47,20 @@ public class Event {
         this.name = name;
         this.amountOfUsers = 0;
     }
-    public Event( LocalDateTime time_start, LocalDateTime time_end, String name ){
+
+    public Event(LocalDateTime time_start, LocalDateTime time_end, String name,Session session ,String description){
+
         this.timeStart = time_start;
+        this.timeEnd = time_end;
+        this.name = name;
+        this.amountOfUsers = 0;
+        this.session = session;
+        this.description = description;
+
+    }
+    public Event( LocalDateTime time_start, LocalDateTime time_end, String name,String description ){
+        this.timeStart = time_start;
+        this.description = description.isEmpty()?null:description;
         this.timeEnd = time_end;
         this.name = name;
 
