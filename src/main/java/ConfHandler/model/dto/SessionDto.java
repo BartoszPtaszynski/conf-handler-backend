@@ -26,6 +26,8 @@ public class SessionDto {
     private String building;
     private String roomNumber;
     private List<EventDto> eventList;
+    private String chairman;
+
 
 }
 

@@ -19,4 +19,11 @@ public interface ConferenceRepository extends JpaRepository<Conference,UUID> {
             "order by conference.id desc " +
             "limit 1 ")
     Optional<ConferenceInfoDto> getConferenceInfo();
+
+    @Query("select conference from Conference  conference" +
+            " order by conference.dateStart desc " +
+            "limit  1")
+    Optional<Conference> getConference();
+
+
 }

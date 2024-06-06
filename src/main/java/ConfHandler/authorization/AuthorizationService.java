@@ -36,6 +36,7 @@ public class AuthorizationService {
                 .email(participant.getEmail())
                 .affiliation(participant.getAffiliation())
                 .bookmarkedEvents(eventsIds)
+                .title(participant.getTitleManual())
                 .build();
     }
 }

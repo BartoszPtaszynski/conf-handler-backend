@@ -1,10 +1,14 @@
 package ConfHandler.Admin;
 
 import ConfHandler.SuccessJsonResponse;
+import ConfHandler.exception.ParticipantNotFoundException;
+import ConfHandler.model.dto.MetadataDto;
 import ConfHandler.model.entity.Participant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +37,7 @@ public class AdminController {
         return (adminService.getEventsLectures());
     }
     @PostMapping("/addSession")
-    public SuccessJsonResponse addSession(@RequestBody List<SessionCommand> command) {
+    public SuccessJsonResponse addSession(@RequestBody List<SessionCommand> command)  {
         adminService.addSession(command);
         return new SuccessJsonResponse("Sessions added");
     }
@@ -45,6 +49,20 @@ public class AdminController {
     @GetMapping("/getSessions")
     public List<?> getSessions() {
         return (adminService.getSessions());
+    }
+
+    @PutMapping("/updateSessions")
+    public SuccessJsonResponse updateSession(@RequestBody List<SessionInfo> command)  {
+        adminService.updateSession(command);
+        return new SuccessJsonResponse("Sessions updated");
+    }
+
+
+    @MessageMapping("/conference")
+    @SendTo("/")
+    public String handleUpdate(String message) throws InterruptedException {
+        Thread.sleep(1000);
+        return "Update received: " + message;
     }
 
 }

@@ -47,6 +47,11 @@ public class DisplayConferenceService {
                         .street(s.getStreet())
                         .building(s.getBuilding())
                         .eventList(getAllEventList(s,id))
+                        .chairman(s.getChairman()==null?null:
+                                s.getChairman().getTitleManual()==null?
+                                        String.format("%s %s",s.getChairman().getName(),s.getChairman().getSurname())
+                                        :
+                                        String.format("%s %s %s",s.getChairman().getTitleManual(),s.getChairman().getName(),s.getChairman().getSurname()))
                         .build()
                 )
                 .filter(sessionDto -> !sessionDto.getEventList().isEmpty())
@@ -93,5 +98,16 @@ public class DisplayConferenceService {
 
     public ConferenceInfoDto getConferenceInfo() {
         return conferenceRepository.getConferenceInfo().orElseThrow(()->new NullPointerException("conference not found"));
+    }
+
+    public MetadataDto getMetadata() {
+        Conference conference = conferenceRepository.getConference().orElseThrow(()->new NullPointerException("conference not found"));
+        return   MetadataDto.builder()
+                .contactEmail(conference.getContactEmail())
+                .contactCellNumber(conference.getContactCellNumber())
+                .contactWebsite(conference.getContactWebsite())
+                .contactLandlineNumber(conference.getContactLandlineNumber()).build()
+                ;
+
     }
 }

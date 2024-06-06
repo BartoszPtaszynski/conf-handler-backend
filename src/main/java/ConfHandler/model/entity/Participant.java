@@ -26,7 +26,7 @@ public class Participant {
     private String email;
     private String affiliation;
     private String password;
-
+    private String titleManual;
 
 
     /*    public Set<Attendance_Event> getAttendence_event() {
@@ -36,12 +36,13 @@ public class Participant {
     @OneToMany(mappedBy = "participant")
     private Set<Attendance_Event> attendence_event;*/
 
-    public Participant( String name, String surname, String email, String affiliation, String password) {
+    public Participant( String name, String surname, String email, String affiliation, String password,String titleManual) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.affiliation = affiliation;
         this.password = password;
+        this.titleManual=titleManual;
     }
     public UUID getId() {
         return id;

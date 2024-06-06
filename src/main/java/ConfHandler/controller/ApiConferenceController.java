@@ -35,4 +35,16 @@ public class ApiConferenceController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
         }
     }
+    @GetMapping("/conferenceMetadata")
+    public ResponseEntity<? > getMetadata()  {
+
+        try {
+            return new SuccessJsonResponse(displayConferenceService.getMetadata());
+        }catch (NullPointerException e) {
+
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+        }
+    }
+
+
 }

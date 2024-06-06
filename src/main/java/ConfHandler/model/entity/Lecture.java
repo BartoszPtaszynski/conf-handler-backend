@@ -38,7 +38,7 @@ public class Lecture{
 
     public String getLecturers() {
         return lecturers.stream().map(
-                lecturer -> lecturer.getParticipant().getName()+" "+lecturer.getParticipant().getSurname()
+                lecturer -> (lecturer.getParticipant().getTitleManual()==null?"":lecturer.getParticipant().getTitleManual()+" " )+lecturer.getParticipant().getName()+" "+lecturer.getParticipant().getSurname()
         ).collect(Collectors.joining(", "));
     }
 }

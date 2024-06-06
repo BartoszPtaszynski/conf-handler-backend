@@ -23,8 +23,10 @@ public class Conference {
     @GeneratedValue
     UUID id;
     String name;
-
     OffsetDateTime dateStart;
-
     OffsetDateTime dateEnd;
+    private String contactEmail;
+    private String contactLandlineNumber;
+    private String contactCellNumber;
+    private String contactWebsite;
 }

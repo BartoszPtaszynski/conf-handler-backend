@@ -1,6 +1,8 @@
 package ConfHandler.Admin;
 
+import ConfHandler.exception.ParticipantNotFoundException;
 import ConfHandler.exception.SessionNotFoundException;
+import ConfHandler.model.dto.MetadataDto;
 import ConfHandler.model.entity.Event;
 import ConfHandler.model.entity.Lecture;
 import ConfHandler.model.entity.Participant;
@@ -12,13 +14,12 @@ import ConfHandler.repositories.SessionRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,11 +38,14 @@ public class AdminService {
     private LectureRepository lectureRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
 
     public void addParticipants(List<ParticipantCommand> participantCommand) {
         List<Participant> participants = participantCommand.stream()
                 .map(participant ->
-                        new Participant(participant.getName(),participant.getSurname(),participant.getEmail(),participant.getAffiliation(),generatePassword()))
+                        new Participant(participant.getName(),participant.getSurname(),participant.getEmail(),participant.getAffiliation(),generatePassword(),participant.getTitle()))
                 .toList();
 
         participantRepository.saveAll(participants);
@@ -56,7 +60,7 @@ public class AdminService {
     }
 
     @Transactional
-    public void addSession(List<SessionCommand> sessionCommand) {
+    public void addSession(List<SessionCommand> sessionCommand)  {
         List<Session> sessions = sessionCommand.stream()
                 .map(session ->
                         new Session(
@@ -66,7 +70,9 @@ public class AdminService {
                                 session.getCity(),
                                 session.getStreet(),
                                 session.getBuilding(),
-                                session.getRoomNumber()))
+                                session.getRoomNumber(),
+                                session.getChairman()==null?null:participantRepository.findById(session.getChairman()).get()
+                        ))
                 .toList();
 
         log.info(sessions.toString());
@@ -110,14 +116,15 @@ public class AdminService {
                         .surname(participant.getSurname())
                         .email(participant.getEmail())
                         .affiliation(participant.getAffiliation()== null? "":participant.getAffiliation())
-                        .title("title").build())
+                        .title(participant.getTitleManual()).build())
                 .toList();
     }
 
     public List<SessionInfo> getSessions() {
+        messagingTemplate.convertAndSend("/conference", "XDD");
         return sessionRepository.findAll().stream()
                 .map(session -> SessionInfo.builder()
-                        .id(session.getId().toString())
+                        .id(session.getId())
                         .name(session.getName())
                         .sessionDate(session.getTimeStart().toLocalDate())
                         .timeStart(session.getTimeStart().toLocalTime())
@@ -125,7 +132,9 @@ public class AdminService {
                         .city(session.getCity())
                         .street(session.getStreet())
                         .building(session.getBuilding())
-                        .roomNumber(session.getRoom_number()).build())
+                        .roomNumber(session.getRoom_number())
+                        .chairman(session.getChairman() == null ? null : session.getChairman().getId()).build()
+                )
                 .toList();
     }
 
@@ -149,5 +158,32 @@ public class AdminService {
                             .build()
                             ;
                 }).toList();
+    }
+
+    public void updateSession(List<SessionInfo> command) {
+        command.stream().forEach(
+                sessionInfo -> {
+
+                    Optional<Session> sessionOptional = sessionRepository.findById((sessionInfo.getId()));
+                    if (sessionOptional.isPresent()) {
+                        Session session = sessionOptional.get();
+                        session.setName(sessionInfo.getName());
+                        session.setTimeStart(LocalDateTime.of(sessionInfo.getSessionDate(), sessionInfo.getTimeStart()));
+                        session.setTimeEnd(LocalDateTime.of(sessionInfo.getSessionDate(), sessionInfo.getTimeEnd()));
+                        session.setCity(sessionInfo.getCity());
+                        session.setStreet(sessionInfo.getStreet());
+                        session.setBuilding(sessionInfo.getBuilding());
+                        session.setRoom_number(sessionInfo.getRoomNumber());
+
+                        if(sessionInfo.getChairman()!=null) {
+                            participantRepository.findById(sessionInfo.getChairman()).ifPresent(session::setChairman);
+                        }
+                        sessionRepository.save(session);
+                    }
+                });
+
+    }
+
+    public void getMetadata(MetadataDto command) {
     }
 }

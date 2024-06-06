@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
@@ -22,4 +23,5 @@ public class SessionCommand {
     private String street;
     private String building;
     private String roomNumber;
+    private UUID chairman;
 }

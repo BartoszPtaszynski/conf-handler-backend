@@ -17,6 +17,7 @@ public class ParticipantInfo {
     private String email;
     private String affiliation;
     private List<UUID> bookmarkedEvents;
+    private String title;
 
 
 }
