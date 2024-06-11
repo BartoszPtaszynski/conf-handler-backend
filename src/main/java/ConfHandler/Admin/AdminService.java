@@ -3,14 +3,8 @@ package ConfHandler.Admin;
 import ConfHandler.exception.ParticipantNotFoundException;
 import ConfHandler.exception.SessionNotFoundException;
 import ConfHandler.model.dto.MetadataDto;
-import ConfHandler.model.entity.Event;
-import ConfHandler.model.entity.Lecture;
-import ConfHandler.model.entity.Participant;
-import ConfHandler.model.entity.Session;
-import ConfHandler.repositories.EventRepository;
-import ConfHandler.repositories.LectureRepository;
-import ConfHandler.repositories.ParticipantRepository;
-import ConfHandler.repositories.SessionRepository;
+import ConfHandler.model.entity.*;
+import ConfHandler.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +30,8 @@ public class AdminService {
     private EventRepository eventRepository;
     @Autowired
     private LectureRepository lectureRepository;
+    @Autowired
+    private LecturerRepository lecturerRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -98,7 +94,18 @@ public class AdminService {
 
                             events.add(event);
                             if(!c.getTopic().isEmpty()) {
-                                lectures.add(new Lecture(c.getTopic(),c.get_abstract(),event));
+
+                                Lecture lecture = new Lecture(c.getTopic(),c.get_abstract(),event);
+                                List<String> lecturersIds =Arrays.stream(c.getLecturers().split(",")).toList();
+                                log.warn(lecturersIds.toString());
+                                List<Lecturer> lecturers = lecturersIds.stream()
+                                                         .map(lecturerId->{Lecturer lecturer =new Lecturer(lecture,participantRepository.findById(UUID.fromString(lecturerId)).get());
+                                                             lecturerRepository.save(lecturer);
+                                                             return lecturer;
+                                                         })
+                                                        .toList();
+                                lecture.setLecturers(lecturers);
+                                lectures.add(lecture);
                             }
                         }
                         );
@@ -155,9 +162,51 @@ public class AdminService {
                             .topic(lecture == null ? "" : lecture.getTopic())
                             .description(event.getDescription()==null?"":event.getDescription())
                             .sessionId(event.getSession()==null?"":event.getSession().getId().toString())
+                            .lecturers(lecture== null? "":lecture.getLecturersIds())
                             .build()
                             ;
                 }).toList();
+    }
+
+    public void updateEventLecture(List<EventLectureInfo> command) {
+        command.stream().forEach(
+                eventInfo -> {
+
+                    Optional<Event> eventOptional = eventRepository.findById(UUID.fromString(eventInfo.getId()));
+                    if (eventOptional.isPresent()) {
+                        Event event = eventOptional.get();
+                        event.setName(eventInfo.getName());
+                        event.setTimeStart(LocalDateTime.of(eventInfo.getEventDate(),eventInfo.getTimeStart()));
+                        event.setTimeEnd(LocalDateTime.of(eventInfo.getEventDate(),eventInfo.getTimeEnd()));
+                        event.setDescription(eventInfo.getDescription().isEmpty()?null:eventInfo.getDescription());
+                        if( eventInfo.getSessionId()!=null)  {
+                            sessionRepository.findById(UUID.fromString(eventInfo.getId())).ifPresent(event::setSession);
+                        }
+                        if(eventInfo.getTopic().length()>0) {
+                            Lecture lecture = lectureRepository.getByEvent_Id(event.getId());
+                            if (lecture != null) {
+                                lecture.setTopic(eventInfo.getTopic());
+                                lecture.set_abstract(eventInfo.get_abstract());
+
+                                ArrayList<Lecturer> lecturers = Arrays.stream(eventInfo.getLecturers().split(",")).map(
+                                      lecturerId->
+                                                new Lecturer(lecture,participantRepository.findById(UUID.fromString(lecturerId)).get())
+
+                                ).collect(Collectors.toCollection(ArrayList::new));
+
+                                if(!lecture.equalsLecturers(lecturers)) {
+                                    lecturerRepository.deleteAll(lecture.getLecturers());
+
+                                    lecturerRepository.saveAll(lecturers);
+                                    lecture.setLecturers(lecturers);
+                                }
+                                lectureRepository.save(lecture);
+                            }
+                        }
+                        eventRepository.save(event);
+                    }
+                });
+
     }
 
     public void updateSession(List<SessionInfo> command) {

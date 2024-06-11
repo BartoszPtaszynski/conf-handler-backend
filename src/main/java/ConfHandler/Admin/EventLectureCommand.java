@@ -23,4 +23,5 @@ public class EventLectureCommand {
     @JsonProperty("abstract")
     private String _abstract;
     private String description;
+    private  String lecturers;
 }

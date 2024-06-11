@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -29,4 +30,11 @@ public class Lecturer {
         this.lecture = lecture;
         this.participant = participant;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        Lecturer lecturer = (Lecturer) object;
+        return Objects.equals(lecture.getId(), lecturer.lecture.getId()) && Objects.equals(participant.getId(), lecturer.participant.getId());
+    }
+
 }

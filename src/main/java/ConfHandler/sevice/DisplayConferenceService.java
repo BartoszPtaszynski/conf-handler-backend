@@ -91,7 +91,7 @@ public class DisplayConferenceService {
                     Lecture lecture = lectureRepository.getByEvent_Id(event.getId());
                     return lecture == null ?
                             new EventDto(event.getId(),event.getName(),event.getDuration()) :
-                            new LectureDto(event.getId(),event.getName(),event.getDuration(),lecture.get_abstract(),lecture.getLecturers(),lecture.getTopic());
+                            new LectureDto(event.getId(),event.getName(),event.getDuration(),lecture.get_abstract(),lecture.getLecturersString(),lecture.getTopic());
                 })
                 .toList();
     }

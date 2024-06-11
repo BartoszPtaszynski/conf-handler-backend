@@ -56,6 +56,11 @@ public class AdminController {
         adminService.updateSession(command);
         return new SuccessJsonResponse("Sessions updated");
     }
+    @PutMapping("/updateEventOrLecture")
+    public SuccessJsonResponse updateEventOrLecture(@RequestBody List<EventLectureInfo> command)  {
+        adminService.updateEventLecture(command);
+        return new SuccessJsonResponse("Events updated");
+    }
 
 
     @MessageMapping("/conference")

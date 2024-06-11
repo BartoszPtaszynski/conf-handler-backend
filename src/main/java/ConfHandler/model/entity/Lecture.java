@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,18 +29,41 @@ public class Lecture{
     private Event event;
 
     @OneToMany(mappedBy = "lecture")
-    private Set<Lecturer> lecturers;
+    private List<Lecturer> lecturers;
 
 
-    public Lecture(String topic, String Abstract,Event event) {
+    public Lecture(String topic, String Abstract, Event event, List<Lecturer> lecturers) {
+        this.topic = topic;
+        this._abstract = Abstract;
+        this.event = event;
+        this.lecturers = lecturers;
+    }
+    public Lecture(String topic, String Abstract, Event event) {
         this.topic = topic;
         this._abstract = Abstract;
         this.event = event;
     }
 
-    public String getLecturers() {
+
+    public String getLecturersString() {
         return lecturers.stream().map(
                 lecturer -> (lecturer.getParticipant().getTitleManual()==null?"":lecturer.getParticipant().getTitleManual()+" " )+lecturer.getParticipant().getName()+" "+lecturer.getParticipant().getSurname()
         ).collect(Collectors.joining(", "));
     }
+    public String getLecturersIds() {
+        return lecturers.stream().map(
+                lecturer -> (lecturer.getParticipant().getId().toString())
+        ).collect(Collectors.joining(","));
+    }
+     public boolean equalsLecturers(List<Lecturer> lecturers) {
+        this.lecturers.sort(Comparator.comparing(c->c.getParticipant().getId()));
+        lecturers.sort(Comparator.comparing(c->c.getParticipant().getId()));
+        if(this.lecturers.size()!=lecturers.size()) return false;
+        for(int i=0;i<lecturers.size();i++) {
+            if(lecturers.get(i).equals(this.lecturers.get(i))) {
+                return false;
+            }
+        }
+        return true;
+     }
 }
