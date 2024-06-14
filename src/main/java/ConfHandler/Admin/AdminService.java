@@ -5,6 +5,7 @@ import ConfHandler.exception.SessionNotFoundException;
 import ConfHandler.model.dto.MetadataDto;
 import ConfHandler.model.entity.*;
 import ConfHandler.repositories.*;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,23 +37,37 @@ public class AdminService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private EmailService emailService;
 
 
     public void addParticipants(List<ParticipantCommand> participantCommand) {
         List<Participant> participants = participantCommand.stream()
-                .map(participant ->
-                        new Participant(participant.getName(),participant.getSurname(),participant.getEmail(),participant.getAffiliation(),generatePassword(),participant.getTitle()))
+                .map(participant ->{
+                    String password = generatePassword();
+                    Participant p = new Participant(participant.getName(),participant.getSurname(),participant.getEmail(),participant.getAffiliation(),passwordEncoder.encode(password),participant.getTitle());
+                    Map<String, Object> templateModel = new HashMap<>();
+                    templateModel.put("name", participant.getName()+" "+participant.getSurname());
+                    templateModel.put("password", password);
+//                    try {
+//                        emailService.sendEmailWithTemplate(p.getEmail(), "Welcome!", templateModel);
+//                        log.info("email to "+p.getName()+" "+p.getSurname()+" sent");
+//                    } catch (MessagingException e) {
+//                        log.warn("email not sent");
+//                    }
+                    return  p;
+                })
                 .toList();
 
         participantRepository.saveAll(participants);
     }
     private String generatePassword() {
         Random random = new Random();
-        String randomDigits = IntStream.range(0, 8)
+        String randomDigits = IntStream.range(0, 4)
                 .mapToObj(i -> random.nextInt(10))
                 .map(String::valueOf)
                 .collect(Collectors.joining());
-        return passwordEncoder.encode(randomDigits);
+        return randomDigits;
     }
 
     @Transactional
