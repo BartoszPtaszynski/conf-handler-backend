@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
@@ -32,6 +34,7 @@ public class DisplayConferenceService {
     @Autowired
     private EventRepository eventRepository;
 
+
     @Autowired
     private ConferenceRepository conferenceRepository;
     public List<?> getDayOfConference(LocalDate date,UUID id) {
@@ -44,14 +47,15 @@ public class DisplayConferenceService {
                         .name(s.getName())
                         .duration(s.getDuration())
                         .city(s.getCity())
+                        .roomNumber(s.getRoom_number())
                         .street(s.getStreet())
                         .building(s.getBuilding())
                         .eventList(getAllEventList(s,id))
-//                        .chairman(s.getChairman()==null?null:
-//                                s.getChairman().getTitleManual()==null?
-//                                        String.format("%s %s",s.getChairman().getName(),s.getChairman().getSurname())
-//                                        :
-//                                        String.format("%s %s %s",s.getChairman().getTitleManual(),s.getChairman().getName(),s.getChairman().getSurname()))
+                        .chairman(s.getChairmanList().isEmpty()?null:
+                                s.getChairmanList().stream()
+                                                .map(chairman ->
+                                                        chairman.getParticipant().getName()+" "+chairman.getParticipant().getSurname())
+                                                .collect(Collectors.joining(", ")))
                         .build()
                 )
                 .filter(sessionDto -> !sessionDto.getEventList().isEmpty())
@@ -64,21 +68,36 @@ public class DisplayConferenceService {
                 id==null
                 ?
                 eventRepository.getEventsByDateWithoutSession(date)  .stream()
-                        .map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList()
+                        .map(
+                                event -> {
+                                    Lecture lecture = lectureRepository.getByEvent_Id(event.getId());
+                                    return lecture == null ?
+                                            new EventDto(event.getId(),event.getName(),event.getDuration()) :
+                                            new LectureDto(event.getId(),event.getName(),event.getDuration(),lecture.get_abstract(),lecture.getLecturersString(),lecture.getTopic(),
+                                                    lecture.getChairmanList().isEmpty()?null: lecture.getChairmanList().stream()
+                                                            .map(chairman ->
+                                                                    chairman.getParticipant().getName()+" "+chairman.getParticipant().getSurname())
+                                                            .collect(Collectors.joining(", ")));
+                                })
+                        .toList()
                 :
 
                         attendeeRepository.getEventsByDateWithoutSessionOfUSer(date,id)
                 .stream()
                 .map(event -> new EventDto(event.getId(),event.getName(),event.getDuration())).toList());
-        log.warn(attendeeRepository.getEventsByDateWithoutSessionOfUSer(date,id).toString());
-        
+
         listOfAllEvents.sort(Comparator.comparing(o -> {
             if (o instanceof SessionDto) {
                 return ((SessionDto) o).getDuration();
-            } else {
+            } else if (o instanceof LectureDto) {
+                return ((LectureDto) o).getDuration();
+            } else   {
                 return ((EventDto) o).getDuration();
             }
+
         }));
+
+
         return listOfAllEvents;
     }
 
@@ -91,7 +110,11 @@ public class DisplayConferenceService {
                     Lecture lecture = lectureRepository.getByEvent_Id(event.getId());
                     return lecture == null ?
                             new EventDto(event.getId(),event.getName(),event.getDuration()) :
-                            new LectureDto(event.getId(),event.getName(),event.getDuration(),lecture.get_abstract(),lecture.getLecturersString(),lecture.getTopic());
+                            new LectureDto(event.getId(),event.getName(),event.getDuration(),lecture.get_abstract(),lecture.getLecturersString(),lecture.getTopic(),
+                                    lecture.getChairmanList().isEmpty()?null: lecture.getChairmanList().stream()
+                                            .map(chairman ->
+                                                    chairman.getParticipant().getName()+" "+chairman.getParticipant().getSurname())
+                                            .collect(Collectors.joining(", ")));
                 })
                 .toList();
     }

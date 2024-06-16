@@ -31,6 +31,9 @@ public class Lecture{
     @OneToMany(mappedBy = "lecture")
     private List<Lecturer> lecturers;
 
+    @OneToMany(mappedBy = "lecture")
+    private List<Chairman> chairmanList;
+
 
     public Lecture(String topic, String Abstract, Event event, List<Lecturer> lecturers) {
         this.topic = topic;

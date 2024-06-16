@@ -22,4 +22,5 @@ public class EventLectureInfo {
     private String _abstract;
     private String description;
     private  String lecturers;
+    private  String chairman;
 }

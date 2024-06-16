@@ -16,4 +16,5 @@ import java.util.List;
 public class ConferenceByDayDto {
     private List<SessionDto> sessions;
     private List<EventDto> events;
+
 }

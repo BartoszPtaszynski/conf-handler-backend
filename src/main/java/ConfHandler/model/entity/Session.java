@@ -34,6 +34,9 @@ public class Session {
     @OneToMany(mappedBy = "session")
     private List<Event> eventList;
 
+    @OneToMany(mappedBy = "session")
+    private List<Chairman> chairmanList;
+
     public Session(String name, LocalDateTime time_start, LocalDateTime time_end, String city, String street, String building, String room_number) {
         this.name = name;
         this.timeStart = time_start;
@@ -42,7 +45,9 @@ public class Session {
         this.street = street;
         this.building = building;
         this.room_number = room_number;
+
     }
+
 
     public String getDuration()
     {

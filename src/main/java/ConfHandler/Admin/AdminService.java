@@ -39,6 +39,8 @@ public class AdminService {
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private ChairmanRepository chairmanRepository;
 
 
     public void addParticipants(List<ParticipantCommand> participantCommand) {
@@ -73,8 +75,8 @@ public class AdminService {
     @Transactional
     public void addSession(List<SessionCommand> sessionCommand)  {
         List<Session> sessions = sessionCommand.stream()
-                .map(session ->
-                        new Session(
+                .map(session ->{
+                        Session newSession =   new Session(
                                 session.getName(),
                                 LocalDateTime.of(session.getSessionDate(),session.getTimeStart()),
                                 LocalDateTime.of(session.getSessionDate(),session.getTimeEnd()),
@@ -82,12 +84,28 @@ public class AdminService {
                                 session.getStreet(),
                                 session.getBuilding(),
                                 session.getRoomNumber()
-                        ))
+                        );
+                    List<String> chairmanIds = Arrays.stream(session.getChairman().split(",")).toList();
+                    List<Chairman> chairmanList = chairmanIds.stream()
+                            .map(chairmanId->{
+                                Chairman chairman = new Chairman(participantRepository.findById(UUID.fromString(chairmanId)).get(),null,newSession);
+                                return chairman;
+                            }).toList();
+                    newSession.setChairmanList(chairmanList);
+                    sessionRepository.save(newSession);
+                    chairmanRepository.saveAll(chairmanList);
+                    return newSession;
+                })
                 .toList();
 
+
+
+
         log.info(sessions.toString());
-        sessionRepository.saveAll(sessions);
+
     }
+
+
 
     @Transactional
     public void addEventOrLecture(List<EventLectureCommand> command) {
@@ -105,26 +123,37 @@ public class AdminService {
                                 Session session = sessionRepository.findById(c.getSessionId()).orElseThrow(()->new SessionNotFoundException(c.getSessionId()));
                                 event = new Event(LocalDateTime.of(c.getEventDate(),c.getTimeStart()),LocalDateTime.of(c.getEventDate(),c.getTimeEnd()),c.getName(),session,c.getDescription());
                             }
+                            eventRepository.save(event);
 
                             events.add(event);
                             if(!c.getTopic().isEmpty()) {
 
                                 Lecture lecture = new Lecture(c.getTopic(),c.get_abstract(),event);
+                                lectureRepository.save(lecture);
                                 List<String> lecturersIds =Arrays.stream(c.getLecturers().split(",")).toList();
-                                log.warn(lecturersIds.toString());
                                 List<Lecturer> lecturers = lecturersIds.stream()
-                                                         .map(lecturerId->{Lecturer lecturer =new Lecturer(lecture,participantRepository.findById(UUID.fromString(lecturerId)).get());
+                                                         .map(lecturerId->{
+                                                             Lecturer lecturer =new Lecturer(lecture,participantRepository.findById(UUID.fromString(lecturerId)).get());
                                                              lecturerRepository.save(lecturer);
                                                              return lecturer;
                                                          })
                                                         .toList();
                                 lecture.setLecturers(lecturers);
                                 lectures.add(lecture);
+
+                                List<String> chairmanIds = Arrays.stream(c.getChairman().split(",")).toList();
+                                List<Chairman> chairmanList = chairmanIds.stream()
+                                        .map(chairmanId->{
+                                            Chairman chairman = new Chairman(participantRepository.findById(UUID.fromString(chairmanId)).get(),lecture,null);
+                                            return chairman;
+                                        }).toList();
+                                lecture.setChairmanList(chairmanList);
+
+                                chairmanRepository.saveAll(chairmanList);
                             }
                         }
                         );
-        eventRepository.saveAll(events);
-        lectureRepository.saveAll(lectures);
+
 
 
 
@@ -154,7 +183,7 @@ public class AdminService {
                         .street(session.getStreet())
                         .building(session.getBuilding())
                         .roomNumber(session.getRoom_number())
-                        .chairman(null).build()
+                        .chairman(session.getChairmanList().stream().map(chairman -> chairman.getParticipant().getId().toString()).collect(Collectors.joining(","))).build()
                 )
                 .toList();
     }
@@ -177,7 +206,10 @@ public class AdminService {
                             .description(event.getDescription()==null?"":event.getDescription())
                             .sessionId(event.getSession()==null?"":event.getSession().getId().toString())
                             .lecturers(lecture== null? "":lecture.getLecturersIds())
+                            .chairman(lecture==null?"":lecture.getChairmanList().stream().map(chairman -> chairman.getParticipant().getId().toString()).collect(Collectors.joining(",")))
+
                             .build()
+
                             ;
                 }).toList();
     }

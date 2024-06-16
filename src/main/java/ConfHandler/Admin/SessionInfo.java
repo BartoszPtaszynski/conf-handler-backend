@@ -25,5 +25,5 @@ public class SessionInfo {
     private String street;
     private String building;
     private String roomNumber;
-    private UUID chairman;
+    private String chairman;
 }
