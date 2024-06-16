@@ -34,11 +34,7 @@ public class Session {
     @OneToMany(mappedBy = "session")
     private List<Event> eventList;
 
-    @ManyToOne
-    @JoinColumn(name = "chairman")
-    private Participant chairman;
-
-    public Session(String name, LocalDateTime time_start, LocalDateTime time_end, String city, String street, String building, String room_number,Participant chairman) {
+    public Session(String name, LocalDateTime time_start, LocalDateTime time_end, String city, String street, String building, String room_number) {
         this.name = name;
         this.timeStart = time_start;
         this.timeEnd = time_end;
@@ -46,7 +42,6 @@ public class Session {
         this.street = street;
         this.building = building;
         this.room_number = room_number;
-        this.chairman = chairman;
     }
 
     public String getDuration()

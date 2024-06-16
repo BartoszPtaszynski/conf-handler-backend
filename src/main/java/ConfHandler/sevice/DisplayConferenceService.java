@@ -47,11 +47,11 @@ public class DisplayConferenceService {
                         .street(s.getStreet())
                         .building(s.getBuilding())
                         .eventList(getAllEventList(s,id))
-                        .chairman(s.getChairman()==null?null:
-                                s.getChairman().getTitleManual()==null?
-                                        String.format("%s %s",s.getChairman().getName(),s.getChairman().getSurname())
-                                        :
-                                        String.format("%s %s %s",s.getChairman().getTitleManual(),s.getChairman().getName(),s.getChairman().getSurname()))
+//                        .chairman(s.getChairman()==null?null:
+//                                s.getChairman().getTitleManual()==null?
+//                                        String.format("%s %s",s.getChairman().getName(),s.getChairman().getSurname())
+//                                        :
+//                                        String.format("%s %s %s",s.getChairman().getTitleManual(),s.getChairman().getName(),s.getChairman().getSurname()))
                         .build()
                 )
                 .filter(sessionDto -> !sessionDto.getEventList().isEmpty())

@@ -81,8 +81,7 @@ public class AdminService {
                                 session.getCity(),
                                 session.getStreet(),
                                 session.getBuilding(),
-                                session.getRoomNumber(),
-                                session.getChairman()==null?null:participantRepository.findById(session.getChairman()).get()
+                                session.getRoomNumber()
                         ))
                 .toList();
 
@@ -155,7 +154,7 @@ public class AdminService {
                         .street(session.getStreet())
                         .building(session.getBuilding())
                         .roomNumber(session.getRoom_number())
-                        .chairman(session.getChairman() == null ? null : session.getChairman().getId()).build()
+                        .chairman(null).build()
                 )
                 .toList();
     }
@@ -239,9 +238,6 @@ public class AdminService {
                         session.setBuilding(sessionInfo.getBuilding());
                         session.setRoom_number(sessionInfo.getRoomNumber());
 
-                        if(sessionInfo.getChairman()!=null) {
-                            participantRepository.findById(sessionInfo.getChairman()).ifPresent(session::setChairman);
-                        }
                         sessionRepository.save(session);
                     }
                 });
