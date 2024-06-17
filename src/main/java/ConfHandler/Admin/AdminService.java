@@ -142,14 +142,16 @@ public class AdminService {
                                 lectures.add(lecture);
 
                                 List<String> chairmanIds = Arrays.stream(c.getChairman().split(",")).toList();
-                                List<Chairman> chairmanList = chairmanIds.stream()
-                                        .map(chairmanId->{
-                                            Chairman chairman = new Chairman(participantRepository.findById(UUID.fromString(chairmanId)).get(),lecture,null);
-                                            return chairman;
-                                        }).toList();
-                                lecture.setChairmanList(chairmanList);
+                                if(chairmanIds.size()>1) {
+                                    List<Chairman> chairmanList = chairmanIds.stream()
+                                            .map(chairmanId -> {
+                                                Chairman chairman = new Chairman(participantRepository.findById(UUID.fromString(chairmanId)).get(), lecture, null);
+                                                return chairman;
+                                            }).toList();
+                                    lecture.setChairmanList(chairmanList);
+                                    chairmanRepository.saveAll(chairmanList);
+                                }
 
-                                chairmanRepository.saveAll(chairmanList);
                             }
                         }
                         );
