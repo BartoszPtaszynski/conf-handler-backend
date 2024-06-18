@@ -13,6 +13,7 @@ public class EventDto{
     private UUID id;
     private String name;
     private String duration;
+    private String description;
 
 
 }
