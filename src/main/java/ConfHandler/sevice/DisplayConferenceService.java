@@ -62,8 +62,6 @@ public class DisplayConferenceService {
                 .toList());
 
 
-
-
         listOfAllEvents.addAll(
                 id==null
                 ?
@@ -74,7 +72,7 @@ public class DisplayConferenceService {
                                     return lecture == null ?
                                             new EventDto(event.getId(),event.getName(),event.getDuration(),event.getDescription()) :
                                             new LectureDto(event.getId(),event.getName(),event.getDuration(),event.getDescription(),lecture.get_abstract(),lecture.getLecturersString(),lecture.getTopic(),
-                                                    lecture.getChairmanList().isEmpty()?null: lecture.getChairmanList().stream()
+                                                    lecture.getChairmanList().isEmpty()?null:lecture.getChairmanList().stream()
                                                             .map(chairman ->
                                                                     chairman.getParticipant().getName()+" "+chairman.getParticipant().getSurname())
                                                             .collect(Collectors.joining(", ")));

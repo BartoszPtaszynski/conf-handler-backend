@@ -141,15 +141,18 @@ public class AdminService {
                                 lecture.setLecturers(lecturers);
                                 lectures.add(lecture);
 
-                                List<String> chairmanIds = Arrays.stream(c.getChairman().split(",")).toList();
-                                if(chairmanIds.size()>1) {
-                                    List<Chairman> chairmanList = chairmanIds.stream()
-                                            .map(chairmanId -> {
-                                                Chairman chairman = new Chairman(participantRepository.findById(UUID.fromString(chairmanId)).get(), lecture, null);
-                                                return chairman;
-                                            }).toList();
-                                    lecture.setChairmanList(chairmanList);
-                                    chairmanRepository.saveAll(chairmanList);
+                                if(c.getChairman().length()>1) {
+                                    List<String> chairmanIds = Arrays.stream(c.getChairman().split(",")).toList();
+                                    log.info(String.valueOf(chairmanIds.isEmpty()));
+                                    if (chairmanIds.size() > 0) {
+                                        List<Chairman> chairmanList = chairmanIds.stream()
+                                                .map(chairmanId -> {
+                                                    Chairman chairman = new Chairman(participantRepository.findById(UUID.fromString(chairmanId)).get(), lecture, null);
+                                                    return chairman;
+                                                }).toList();
+                                        lecture.setChairmanList(chairmanList);
+                                        chairmanRepository.saveAll(chairmanList);
+                                    }
                                 }
 
                             }
