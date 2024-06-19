@@ -42,6 +42,7 @@ public class DisplayConferenceService {
         List<Object> listOfAllEvents=new ArrayList<>();
         listOfAllEvents.addAll(sessionRepository.getSessionsByTimeStart(date).stream()
                 .sorted(Comparator.comparing(Session::getTimeStart))
+
                 .map(s -> SessionDto.builder()
                         .id(s.getId())
                         .name(s.getName())

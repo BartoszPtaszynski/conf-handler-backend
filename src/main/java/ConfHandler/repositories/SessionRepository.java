@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface SessionRepository extends JpaRepository<Session,UUID> {
 
-    @Query("select s from Session s where CAST(s.timeStart as localdate )= :date order by s.timeStart")
+    @Query("select s from Session s where CAST(s.timeStart as localdate )= :date order by s.timeStart, s.name")
     List<Session> getSessionsByTimeStart(LocalDate date);
 
 
