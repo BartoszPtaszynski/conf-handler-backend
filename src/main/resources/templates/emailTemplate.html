@@ -1,13 +1,76 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Your account to DSA conference handler</title>
-
-    <h1>Dear <span th:text="${name}"></span>,</h1>
-    <h2>Your password to conf handler is: <b><span th:text="${password}"></span></b></h2>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 94%;
+            max-width: 600px;
+            margin: 3% auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .content p {
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 14px;
+            color: #777;
+        }
+        .button {
+            display: block;
+            text-align: center;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #479410;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-
+<div class="container">
+    <div class="header">
+        <h1>Welcome to DSA Conference Handler app</h1>
+    </div>
+    <div class="content">
+        <p>Dear <strong th:text="${name}"></strong>,</p>
+        <p>Your account has been created successfully. Here are your login details:</p>
+        <p><strong>Login:</strong> <span th:text="${email}"></span></p>
+        <p><strong>Password:</strong> <span th:text="${password}"></span></p>
+        <p>You can log in using the link below:</p>
+        <a href="https://www.dsa-conference.p.lodz.pl" class="button" style="color: #ffffff;">Log In</a>
+    </div>
+    <div class="footer">
+        <p>If you have any questions, feel free to contact our support team.</p>
+    </div>
+</div>
 </body>
 </html>

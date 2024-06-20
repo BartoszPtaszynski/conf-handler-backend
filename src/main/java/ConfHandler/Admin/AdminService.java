@@ -51,8 +51,9 @@ public class AdminService {
                     Map<String, Object> templateModel = new HashMap<>();
                     templateModel.put("name", participant.getName()+" "+participant.getSurname());
                     templateModel.put("password", password);
+                    templateModel.put("email", participant.getEmail());
 //                    try {
-//                        emailService.sendEmailWithTemplate(p.getEmail(), "Welcome!", templateModel);
+//                        emailService.sendEmailWithTemplate(p.getEmail(), "Welcome to the dsa conference!", templateModel);
 //                        log.info("email to "+p.getName()+" "+p.getSurname()+" sent");
 //                    } catch (MessagingException e) {
 //                        log.warn("email not sent");
