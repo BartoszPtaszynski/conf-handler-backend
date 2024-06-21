@@ -1,9 +1,6 @@
 package ConfHandler.authorization;
 
-import ConfHandler.model.dto.InvolvedInEvents;
-import ConfHandler.model.dto.LectureShortDto;
-import ConfHandler.model.dto.SessionShortDto;
-import ConfHandler.model.entity.Lecture;
+import ConfHandler.model.dto.ShortInvolvedTypeDto;
 import ConfHandler.model.entity.Participant;
 import ConfHandler.repositories.AttendeeRepository;
 import ConfHandler.repositories.ChairmanRepository;
@@ -13,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,36 +39,32 @@ public class AuthorizationService {
             throw new RuntimeException();
         }
         List<UUID> eventsIds = attendeeRepository.getIdsOfUserEvents(participant.getId());
+        List<ShortInvolvedTypeDto> involvedEvents=new LinkedList<>();
 
-        List<LectureShortDto> lecturerOfLectures = lecturerRepository.getLectureOfUser(participant.getId()).stream()
-                .map(lecture -> LectureShortDto.builder()
+        involvedEvents.addAll( lecturerRepository.getLectureOfUser(participant.getId()).stream()
+                .map(lecture -> ShortInvolvedTypeDto.builder()
                         .date(lecture.getEvent().getTimeStart().toLocalDate())
                         .duration(lecture.getEvent().getDuration())
-                        .sessionName(lecture.getEvent().getSession()==null?null:lecture.getEvent().getSession().getName())
-                        .topic(lecture.getTopic()).build()
-                ).toList();
-        List<LectureShortDto> lecturesChairman = chairmanRepository.getChairmanOfLecture(participant.getId()).stream()
-                .map(lecture -> LectureShortDto.builder()
+                        .name((lecture.getEvent().getSession()==null?"":lecture.getEvent().getSession().getName()+" - ")+lecture.getTopic())
+                        .function("lecturer").build()
+                ).toList());
+        involvedEvents.addAll( chairmanRepository.getChairmanOfLecture(participant.getId()).stream()
+                .map(lecture -> ShortInvolvedTypeDto.builder()
                         .date(lecture.getEvent().getTimeStart().toLocalDate())
                         .duration(lecture.getEvent().getDuration())
-                        .sessionName(lecture.getEvent().getSession()==null?null:lecture.getEvent().getSession().getName())
-                        .topic(lecture.getTopic()).build()
-                ).toList();
-        List<SessionShortDto> sessionChairman =  chairmanRepository.getChairmanOfSession(participant.getId()).stream()
-                .map(session -> SessionShortDto.builder()
+                        .name((lecture.getEvent().getSession()==null?"":lecture.getEvent().getSession().getName()+" - ")+lecture.getTopic())
+                        .function("chairman of lecture").build()
+                ).toList());
+        involvedEvents.addAll(chairmanRepository.getChairmanOfSession(participant.getId()).stream()
+                .map(session -> ShortInvolvedTypeDto.builder()
                         .date(session.getTimeStart().toLocalDate())
                         .duration(session.getDuration())
                         .name(session.getName())
+                        .function("chairman of session")
                         .build()
-                ).toList();
+                ).toList());
 
-
-        InvolvedInEvents involvedInEvents = InvolvedInEvents.builder()
-                .chairmanOfLectures(lecturesChairman)
-                .lecturerOfLectures(lecturerOfLectures)
-                .chairmanOfSessions(sessionChairman)
-                .build();
-
+        involvedEvents.sort(Comparator.comparing(event->event.getDuration()));
         return ParticipantInfo.builder()
                 .id(participant.getId())
                 .name(participant.getName())
@@ -78,7 +73,7 @@ public class AuthorizationService {
                 .affiliation(participant.getAffiliation())
                 .bookmarkedEvents(eventsIds)
                 .title(participant.getTitleManual())
-                .involvedInEvents(involvedInEvents)
+                .involvedInEvents(involvedEvents)
                 .build();
     }
 }

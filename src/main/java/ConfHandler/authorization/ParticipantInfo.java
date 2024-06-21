@@ -1,7 +1,6 @@
 package ConfHandler.authorization;
 
-import ConfHandler.model.dto.InvolvedInEvents;
-import ConfHandler.model.entity.Participant;
+import ConfHandler.model.dto.ShortInvolvedTypeDto;
 import lombok.*;
 
 import java.util.List;
@@ -19,5 +18,5 @@ public class ParticipantInfo {
     private String affiliation;
     private List<UUID> bookmarkedEvents;
     private String title;
-    private InvolvedInEvents involvedInEvents;
+    private List<ShortInvolvedTypeDto> involvedInEvents;
 }
