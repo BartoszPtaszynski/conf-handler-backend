@@ -71,7 +71,8 @@ public class DisplayConferenceService {
                                 event -> {
                                     Lecture lecture = lectureRepository.getByEvent_Id(event.getId());
                                     return lecture == null ?
-                                            new EventDto(event.getId(),event.getName(),event.getDuration(),event.getDescription()) :
+                                            new EventDto(event.getId(),event.getName(),event.getDuration(),event.getDescription(),event.getMenu() == null ? null : MenuDto.builder()
+                                                    .header( event.getMenu().getHeader()).name(event.getMenu().getItems()).build()) :
                                             new LectureDto(event.getId(),event.getName(),event.getDuration(),event.getDescription(),lecture.get_abstract(),lecture.getLecturersString(),lecture.getTopic(),
                                                     lecture.getChairmanList().isEmpty()?null:lecture.getChairmanList().stream()
                                                             .map(chairman ->
@@ -83,7 +84,8 @@ public class DisplayConferenceService {
 
                         attendeeRepository.getEventsByDateWithoutSessionOfUSer(date,id)
                 .stream()
-                .map(event -> new EventDto(event.getId(),event.getName(),event.getDuration(),event.getDescription())).toList());
+                .map(event -> new EventDto(event.getId(),event.getName(),event.getDuration(),event.getDescription(),event.getMenu() == null ? null : MenuDto.builder()
+                        .header( event.getMenu().getHeader()).name(event.getMenu().getItems()).build())).toList());
 
         listOfAllEvents.sort(Comparator.comparing(o -> {
             if (o instanceof SessionDto) {
@@ -108,7 +110,8 @@ public class DisplayConferenceService {
                 .map(event -> {
                     Lecture lecture = lectureRepository.getByEvent_Id(event.getId());
                     return lecture == null ?
-                            new EventDto(event.getId(),event.getName(),event.getDuration(),event.getDescription()) :
+                            new EventDto(event.getId(),event.getName(),event.getDuration(),event.getDescription(),event.getMenu() == null ? null : MenuDto.builder()
+                                    .header( event.getMenu().getHeader()).name(event.getMenu().getItems()).build()):
                             new LectureDto(event.getId(),event.getName(),event.getDuration(),event.getDescription(),lecture.get_abstract(),lecture.getLecturersString(),lecture.getTopic(),
                                     lecture.getChairmanList().isEmpty()?null: lecture.getChairmanList().stream()
                                             .map(chairman ->

@@ -24,7 +24,7 @@ public class AuthController {
             ParticipantInfo participantInfo = authorizationService.login(loginCommand);
             return new SuccessJsonResponse(participantInfo);
         }catch (RuntimeException | ParticipantNotFoundException e) {
-            return new ErrorJsonResponse(e.getMessage(),HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.UNAUTHORIZED);
         }
     }
 }

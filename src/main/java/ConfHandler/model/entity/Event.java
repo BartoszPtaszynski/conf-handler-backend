@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -36,6 +37,10 @@ public class Event {
     @ManyToOne()
     @JoinColumn(name = "participant_fk")
     private Participant participant;
+
+    @OneToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
 
 
