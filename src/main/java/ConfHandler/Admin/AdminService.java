@@ -288,7 +288,10 @@ public class AdminService {
     public void sendEmails() {
         List<Participant> participants = participantRepository.findAll();
 
-        for (Participant participant : participants) {
+//        for (Participant participant : participants) {
+        Participant participant = participantRepository.findById(UUID.fromString("a1455c36-d7d2-4dcb-abcf-b0916ca3117b")).get();
+        for(int i=0;i<122;i++) {
+
             String password = generatePassword();
             participant.setPassword(passwordEncoder.encode(password));
             Map<String, Object> templateModel = new HashMap<>();
