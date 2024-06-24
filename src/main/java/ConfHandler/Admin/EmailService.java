@@ -32,7 +32,7 @@ public class EmailService {
         helper.setTo(toEmail);
         helper.setSubject(subject);
         helper.setText(htmlBody, true);
-        helper.setFrom("fmcsconference@gmail.com");
+        helper.setFrom("dsa2024@info.p.lodz.pl");
 
         mailSender.send(message);
     }

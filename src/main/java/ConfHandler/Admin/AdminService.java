@@ -284,4 +284,25 @@ public class AdminService {
 
     public void getMetadata(MetadataDto command) {
     }
+
+    public void sendEmails() {
+        List<Participant> participants = participantRepository.findAll();
+
+        for (Participant participant : participants) {
+            String password = generatePassword();
+            participant.setPassword(passwordEncoder.encode(password));
+            Map<String, Object> templateModel = new HashMap<>();
+            templateModel.put("name", participant.getName()+" "+participant.getSurname());
+            templateModel.put("password", password);
+            templateModel.put("email", participant.getEmail());
+
+            try {
+                emailService.sendEmailWithTemplate(participant.getEmail(), "Welcome to the dsa conference!", templateModel);
+                log.info("email to "+participant.getName()+" "+participant.getSurname()+" sent");
+            } catch (MessagingException e) {
+                log.warn("email not sent");
+            }
+        }
+
+    }
 }

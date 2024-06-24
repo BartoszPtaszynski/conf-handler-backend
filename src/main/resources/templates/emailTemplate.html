@@ -61,12 +61,16 @@
         <h1>Welcome to DSA Conference Handler app</h1>
     </div>
     <div class="content">
-        <p>Dear <strong th:text="${name}"></strong>,</p>
+        <p>Dear <strong th:text="${name}">(name)</strong>,</p>
         <p>Your account has been created successfully. Here are your login details:</p>
         <p><strong>Login:</strong> <span th:text="${email}"></span></p>
         <p><strong>Password:</strong> <span th:text="${password}"></span></p>
         <p>You can log in using the link below:</p>
         <a href="https://www.dsa-conference.p.lodz.pl" class="button" style="color: #ffffff;">Log In</a>
+        <br>
+        <div style="text-align: center; font-weight: bold;">
+            <p>Watch our <a href="https://www.dsa-conference.p.lodz.pl/tutorial" style="text-decoration: none; color: #479410;">tutorial video</a> to get started.</p>
+        </div>
     </div>
     <div class="footer">
         <p>If you have any questions, feel free to contact our support team.</p>

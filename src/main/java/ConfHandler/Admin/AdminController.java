@@ -62,6 +62,13 @@ public class AdminController {
         return new SuccessJsonResponse("Events updated");
     }
 
+    @PostMapping("sendEmails")
+    public SuccessJsonResponse sendEmails()  {
+        adminService.sendEmails();
+        return new SuccessJsonResponse("emails sent");
+
+    }
+
 
     @MessageMapping("/conference")
     @SendTo("/")
