@@ -1,24 +1,21 @@
 package ConfHandler.sevice;
 
 import ConfHandler.model.dto.*;
-import ConfHandler.model.entity.*;
+import ConfHandler.model.entity.Conference;
+import ConfHandler.model.entity.Event;
+import ConfHandler.model.entity.Lecture;
+import ConfHandler.model.entity.Session;
 import ConfHandler.repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
-import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
 @Slf4j
