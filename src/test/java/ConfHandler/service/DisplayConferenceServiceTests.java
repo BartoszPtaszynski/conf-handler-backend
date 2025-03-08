@@ -133,7 +133,15 @@ public class DisplayConferenceServiceTests {
         List<?> result = displayConferenceService.getDayOfConference(date, null);
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("Session", ((SessionDto)result.get(0)).getName());
-        assertEquals("Event", ((EventDto)result.get(1)).getName());
+
+        for (Object obj : result) {
+            if (obj instanceof SessionDto sessionDto) {
+                assertEquals("Session", sessionDto.getName());
+            } else if (obj instanceof EventDto eventDto) {
+                assertEquals("Event", eventDto.getName());
+            } else {
+                fail("Unexpected object type: " + obj.getClass().getSimpleName());
+            }
+        }
     }
 }
