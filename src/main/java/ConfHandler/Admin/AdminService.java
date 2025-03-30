@@ -195,29 +195,21 @@ public class AdminService {
     }
 
     public List<EventLectureInfo> getEventsLectures() {
-        return eventRepository.findAll().stream()
-                .map(event ->
-                {
-                    Lecture lecture = lectureRepository.getByEvent_Id(event.getId());
-
-                    return EventLectureInfo.builder()
-                            .id(event.getId().toString())
-                            .name(event.getName()==null?"":event.getName())
-                            .eventDate(event.getTimeStart().toLocalDate())
-                            .timeStart(event.getTimeStart().toLocalTime())
-                            .timeEnd(event.getTimeEnd().toLocalTime())
-
-                            ._abstract(lecture == null ? "" : lecture.get_abstract())
-                            .topic(lecture == null ? "" : lecture.getTopic())
-                            .description(event.getDescription()==null?"":event.getDescription())
-                            .sessionId(event.getSession()==null?"":event.getSession().getId().toString())
-                            .lecturers(lecture== null? "":lecture.getLecturersIds())
-                            .chairman(lecture==null?"":lecture.getChairmanList().stream().map(chairman -> chairman.getParticipant().getId().toString()).collect(Collectors.joining(",")))
-
-                            .build()
-
-                            ;
-                }).toList();
+        return eventRepository.findAllEventsWithDetails().stream()
+                .map(row -> EventLectureInfo.builder()
+                        .id(row[0].toString())
+                        .name(row[1] == null ? "" : row[1].toString())
+                        .eventDate(((java.sql.Timestamp) row[2]).toLocalDateTime().toLocalDate())
+                        .timeStart(((java.sql.Timestamp) row[2]).toLocalDateTime().toLocalTime())
+                        .timeEnd(((java.sql.Timestamp) row[3]).toLocalDateTime().toLocalTime())
+                        .description(row[4] == null ? "" : row[4].toString())
+                        .sessionId(row[5] == null ? "" : row[5].toString())
+                        .topic(row[6] == null ? "" : row[6].toString())
+                        ._abstract(row[7] == null ? "" : row[7].toString())
+                        .lecturers(row[8] == null ? "" : row[8].toString())
+                        .chairman(row[9] == null ? "" : row[9].toString())
+                        .build())
+                .toList();
     }
 
     public void updateEventLecture(List<EventLectureInfo> command) {
