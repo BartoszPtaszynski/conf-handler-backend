@@ -1,23 +1,18 @@
 package ConfHandler.model.dto;
 
-import ConfHandler.model.entity.Event;
-import ConfHandler.model.entity.Session;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
 @ToString
-public class SessionDto {
+@AllArgsConstructor
+public class SessionDto implements TimeItem {
     private UUID id;
     private String name;
     private String duration;
@@ -28,6 +23,12 @@ public class SessionDto {
     private List<EventDto> eventList;
     private String chairman;
 
+    public SessionDto copy(List<EventDto> eventListCopy) {
+        return new SessionDto(this.id, this.name, this.duration, this.city, this.street, this.building, this.roomNumber, eventListCopy, this.chairman);
+    }
 
+    public List<EventDto> getEventList() {
+        return Optional.ofNullable(eventList).orElseGet(() -> eventList = new ArrayList<>());
+    }
 }
 

@@ -19,13 +19,17 @@ public interface AttendeeRepository extends JpaRepository<Attendee, UUID> {
             "where attendee.event = :event " +
             "and " +
             "attendee.participant = :participant")
-    public Optional<Attendee> findByEventAndParticipant(@Param("event") Event event, @Param("participant") Participant participant);
+    Optional<Attendee> findByEventAndParticipant(@Param("event") Event event, @Param("participant") Participant participant);
 
     @Query("SELECT attendee.event.id " +
             "from Attendee attendee " +
             "where attendee.participant.id = :id ")
     List<UUID> getIdsOfUserEvents(@Param("id") UUID id);
 
+    @Query("SELECT attendee.event.id " +
+            "from Attendee attendee " +
+            "where attendee.participant.id = :id and  CAST(attendee.event.timeStart as localdate)= :date ")
+    List<UUID> getIdsOfUserEventsByDate(@Param("date") LocalDate date, @Param("id") UUID id);
 
     @Query("select e.event from Attendee e where cast(e.event.timeStart as localdate) = :date and e.participant.id = :id and e.event.session is null ")
     List<Event> getEventsByDateWithoutSessionOfUSer(LocalDate date, UUID id);

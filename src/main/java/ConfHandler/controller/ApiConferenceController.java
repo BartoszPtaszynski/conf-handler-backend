@@ -2,6 +2,7 @@ package ConfHandler.controller;
 
 import ConfHandler.SuccessJsonResponse;
 import ConfHandler.sevice.DisplayConferenceService;
+import ConfHandler.sevice.DisplayConferenceUserService;
 import org.hibernate.mapping.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,13 +19,17 @@ public class ApiConferenceController {
 
     @Autowired
     private DisplayConferenceService displayConferenceService;
+    
+    @Autowired
+    private DisplayConferenceUserService displayConferenceUserService;
+    
     @GetMapping("/getTimeLineByDate")
     public ResponseEntity<?> getTimeLineByDay(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date,null));
+        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date));
     }
     @GetMapping("/getBookmarkedEvents")
     public ResponseEntity<?> getTimeLineByDayOfParticipant(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, UUID id) {
-        return new SuccessJsonResponse(displayConferenceService.getDayOfConference(date,id));
+        return new SuccessJsonResponse(displayConferenceUserService.getDayOfConferenceForUser(date,id));
     }
 
     @GetMapping("/conferenceDetails")

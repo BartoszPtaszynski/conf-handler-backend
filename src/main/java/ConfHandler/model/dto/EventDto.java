@@ -5,12 +5,13 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
+
 @AllArgsConstructor
 @Getter
 @Setter
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EventDto{
+public class EventDto implements TimeItem {
     private UUID id;
     private String name;
     private String duration;
